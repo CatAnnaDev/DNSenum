@@ -10,8 +10,6 @@ DNSenum is a Bash script for DNS Enumeration. Try to resolve all subdomains of a
 + -f <file>         Subdomain list file to use for test
 + -n <dns server>   DNS Server to use for query
 + -c                Check for HTTP Server banner
-+ -v                Check Domain on VirusTotal
-+ -s                Set Shodan API Key in order to query it
 + -r <result>       Show only result that match <result>
 +
 ```
@@ -37,22 +35,11 @@ DNSenum is a Bash script for DNS Enumeration. Try to resolve all subdomains of a
 Trying www.blog ...
 ```
 
-Example using `-v` that check the domain on VirusTotal
 ```bash
-# ./dnsenum.sh -d waf.red -v
+# ./dnsenum.sh -d waf.red
 
 +
 + Dns Enumeration for domain waf.red
-+ Check URL on VirusTotal
-+
-
-+
-+ Querying VirusTotal...
-+ Result from VirusTotal:
-+
-                blog | CNAME      | node1.waf.red.                 |           
-+
-+ End Results from VirusTotal.
 +
 
 +

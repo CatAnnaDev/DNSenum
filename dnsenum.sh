@@ -83,37 +83,37 @@ if [[ ${STARTRES} =~ $REGEX ]]; then
 			echo -en "\033[99D"
 			echo -en "\033[K"
 		fi
-
-		#printf "%20s | %-10s | %-30s | %-10s" "${DOMAIN}" "${BASH_REMATCH[2]}" "${BASH_REMATCH[3]}" "${CURL}"
 		printf "%30b | %-20b | %-40b | %-10b" "\033[0;32m${DOMAIN}\033[0m" "\033[1;34m${BASH_REMATCH[2]}\033[0m" "${BASH_REMATCH[3]}" "${CURL}"
 		echo ""
 	fi
 fi
 
 while read line; do
-	DNSRES=$(dig +noall +answer +nottlid +nocl ${line}.${DOMAIN}${DNSSERVER} | head -1)
+	TMP=${line}.${DOMAIN}
+	URL_RM_DOT=${TMP//../.}
+	URLEND=${URL_RM_DOT/./}
+	DNSRES=$(dig +noall +answer +nottlid +nocl ${URLEND}${DNSSERVER} | head -1)
 
-	echo -en "trying ${line} ..."
+	echo -en "${DOMAIN} trying ${line} ..."
 
 	if [[ ${DNSRES} =~ $REGEX ]]; then
 		RES="${BASH_REMATCH[3]}"
-		if [[ "${WILDCARD}" = "${RES}" ]]; then
-			#echo "discard ${RES}"
+		if [[ "${WILDCARD}" == "${RES}" ]]; then
+			echo "discard ${RES}"
 			echo -en "\033[K"
 			echo -en "\033[99D"
 		else
 			echo -en "\033[99D"
 			echo -en "\033[K"
 
-			if [ ${RESULT} = "0" ] || [ ${RESULT} = ${BASH_REMATCH[3]} ]; then
+			if [ ${RESULT} == "0" ] || [ ${RESULT} == ${BASH_REMATCH[3]} ]; then
 				if [ $HTTPCHECK -eq 1 ]; then
-					echo -en "trying to connect to http://${line}.${DOMAIN} ..."
-					CURL=$(curl -m5 -s -I --connect-timeout 2 "http://${line}.${DOMAIN}" | grep -i "server:" | sed -e 's/Server: //g')
+					URL="http://${URLEND}"
+					echo -en "trying to connect to ${URL} ..."
+					CURL=$(curl -m5 -s -I --connect-timeout 2 ${URL} | grep -i "server:" | sed -e 's/Server: //g')
 					echo -en "\033[99D"
 					echo -en "\033[K"
 				fi
-
-				#printf "%20s | %-10s | %-30s | %-10s" "${line}" "${BASH_REMATCH[2]}" "${BASH_REMATCH[3]}" "${CURL}"
 				printf "%30b | %-20b | %-40b | %-10b" "\033[0;32m${line}\033[0m" "\033[1;34m${BASH_REMATCH[2]}\033[0m" "${BASH_REMATCH[3]}" "${CURL}"
 				echo ""
 			fi
